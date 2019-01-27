@@ -5,42 +5,38 @@ public class TSPSolution {
     private ArrayList<HashMap> nodes;
     private ArrayList<Integer> primaryGraph;
     private ArrayList<Integer> secondaryGraph;
+    private String name;
 
-    public TSPSolution(ArrayList<HashMap> nodes, ArrayList<Integer> primaryGraph, ArrayList<Integer> secondaryGraph) {
+
+    public TSPSolution(ArrayList<HashMap> nodes, ArrayList<Integer> primaryGraph, ArrayList<Integer> secondaryGraph, String name) {
+        this.name = name;
         this.nodes = nodes;
         this.primaryGraph = primaryGraph;
         this.secondaryGraph = secondaryGraph;
     }
 
     public void print() {
-        System.out.println("Results:");
+        System.out.println(name);
 
-        System.out.println("Primary Graph nodes:");
+        printResults(primaryGraph, "Primary Graph:");
+        printResults(secondaryGraph, "Secondary Graph:");
+    }
 
-        for (int i=0;i<primaryGraph.size();i++) {
-            System.out.print(primaryGraph.get(i));
-            if (i != primaryGraph.size() - 1)
+    private void printResults(ArrayList<Integer> graph, String name) {
+        System.out.println(name);
+
+        for (int i=0;i<graph.size();i++) {
+            System.out.print(graph.get(i));
+            if (i != graph.size() - 1)
                 System.out.print("-");
 
         }
-        System.out.println();
 
-        System.out.println(("Total cost: " + calculateTotalCost(primaryGraph)));
-
-        System.out.println("Secondary Graph nodes:");
-
-        for (int i=0;i<secondaryGraph.size();i++) {
-            System.out.print(secondaryGraph.get(i));
-            if (i != secondaryGraph.size() - 1)
-                System.out.print("-");
-
-        }
-        System.out.println();
-
-        System.out.println(("Total cost: " + calculateTotalCost(secondaryGraph)));
+        System.out.println("\nTotal cost: " + calculateTotalCost(graph) + "\n");
     }
 
     private int calculateTotalCost(ArrayList<Integer> graph) {
+        graph.add(graph.get(0));
         int totalCost = 0;
 
         for (int i=0; i<graph.size()-1; i++) {
@@ -49,11 +45,6 @@ public class TSPSolution {
 
             totalCost += euclideanDistance(curNode.get("x"), curNode.get("y"), nextNode.get("x"), nextNode.get("y"));
         }
-
-        HashMap<String, Integer> firstNode = nodes.get(graph.get(0));
-        HashMap<String, Integer> lastNode = nodes.get(graph.get(graph.size()-1));
-
-        totalCost += euclideanDistance(firstNode.get("x"), firstNode.get("y"), lastNode.get("x"), lastNode.get("y"));
 
         return totalCost;
     }
