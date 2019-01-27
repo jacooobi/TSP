@@ -1,90 +1,28 @@
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
-public class NNHeuristic {
-    private ArrayList<HashMap> nodes;
-    private ArrayList<Integer> usedNodes;
-
-    private ArrayList<Integer> primaryGraph;
-    private ArrayList<Integer> secondaryGraph;
-
+public class NNHeuristic extends BaseHeuristic {
     public NNHeuristic(ArrayList nodes) {
-        this.nodes = nodes;
-        this.usedNodes = new ArrayList<>();
-        this.primaryGraph = new ArrayList<>();
-        this.secondaryGraph = new ArrayList<>();
+        super(nodes);
     }
 
-    public TSPSolution solve() {
-        int currentNode = getStartNode();
-        addNode(primaryGraph, currentNode);
-
-        while (primaryGraph.size() < 50) {
-            int nearestNode = getNearestAvailable(currentNode);
-            addNode(primaryGraph, nearestNode);
-            currentNode = nearestNode;
-        }
-
-        currentNode = getStartNode();
-        addNode(secondaryGraph, currentNode);
-
-        while (secondaryGraph.size() < 50) {
-            int nearestNode = getNearestAvailable(currentNode);
-            addNode(secondaryGraph, nearestNode);
-            currentNode = nearestNode;
-        }
-
-        return new TSPSolution(nodes, primaryGraph, secondaryGraph);
-    }
-
-    private void addNode(ArrayList graph, int node) {
-        graph.add(node);
-        usedNodes.add(node);
-    }
-
-    private int getStartNode() {
-        while(true) {
-            Random rand = new Random();
-            int drawnNode = rand.nextInt(nodes.size());
-
-            if (!usedNodes.contains(drawnNode))
-                return drawnNode;
-        }
-
-    }
-
-    private int euclideanDistance(int x1, int y1, int x2, int y2) {
-        return (int)Math.round(Math.sqrt((Math.pow(x2 - x1, 2.0) + Math.pow(y2 - y1, 2.0))));
-    }
-
-    private ArrayList<HashMap<String, Integer>> calculateDistances(HashMap<String, Integer> startNode) {
+    @Override
+    protected ArrayList<HashMap<String, Integer>> evaluateCandidates(ArrayList<Integer> graph) {
         ArrayList<HashMap<String, Integer>> distances = new ArrayList<>();
 
+        for (int i = 0; i < nodes.size(); i++) {
+            if (usedNodes.contains(i)) continue;
 
-        for(HashMap<String, Integer> node : nodes) {
-            HashMap<String,Integer> distanceNode = new HashMap<>();
-            distanceNode.put("id", node.get("id"));
-            distanceNode.put("distance", euclideanDistance(startNode.get("x"), startNode.get("y"), node.get("x"), node.get("y")));
+            HashMap<String, Integer> candidateNode = new HashMap<>();
+            HashMap<String, Integer> curNode = nodes.get(graph.get(graph.size() - 1));
+            HashMap<String, Integer> newNode = nodes.get(i);
 
-            distances.add(distanceNode);
+            candidateNode.put("id", newNode.get("id"));
+            candidateNode.put("distance", euclideanDistance(curNode.get("x"), curNode.get("y"), newNode.get("x"), newNode.get("y")));
+
+            distances.add(candidateNode);
         }
 
         return distances;
-    }
-
-    private int getNearestAvailable(int currentNodeId) {
-        HashMap<String, Integer> startNode = nodes.get(currentNodeId);
-
-        ArrayList<HashMap<String, Integer>> distances = calculateDistances(startNode);
-        distances.sort((o1, o2) -> o1.get("distance").compareTo(o2.get("distance")));
-
-        for (HashMap<String, Integer> node: distances) {
-            if (!usedNodes.contains(node.get("id"))) {
-                return node.get("id");
-            }
-        }
-
-        return -1;
     }
 }
