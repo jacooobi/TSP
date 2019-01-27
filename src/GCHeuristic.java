@@ -4,7 +4,7 @@ import java.util.HashMap;
 public class GCHeuristic extends BaseHeuristic {
 
     public GCHeuristic(ArrayList nodes) {
-        super(nodes);
+        super(nodes, "Greedy Cycle");
     }
 
     @Override

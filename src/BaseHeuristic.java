@@ -3,13 +3,16 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class BaseHeuristic {
+    protected String name;
     protected ArrayList<HashMap> nodes;
     protected ArrayList<Integer> usedNodes;
+
 
     protected ArrayList<Integer> primaryGraph;
     protected ArrayList<Integer> secondaryGraph;
 
-    public BaseHeuristic(ArrayList nodes) {
+    public BaseHeuristic(ArrayList nodes, String name) {
+        this.name = name;
         this.nodes = nodes;
         this.usedNodes = new ArrayList<>();
         this.primaryGraph = new ArrayList<>();
@@ -39,7 +42,7 @@ public class BaseHeuristic {
         constructSolution(primaryGraph);
         constructSolution(secondaryGraph);
 
-        return new TSPSolution(nodes, primaryGraph, secondaryGraph);
+        return new TSPSolution(nodes, primaryGraph, secondaryGraph, name);
     }
 
     private void constructSolution(ArrayList<Integer> graph) {

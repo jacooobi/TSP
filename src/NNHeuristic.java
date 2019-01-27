@@ -3,7 +3,7 @@ import java.util.HashMap;
 
 public class NNHeuristic extends BaseHeuristic {
     public NNHeuristic(ArrayList nodes) {
-        super(nodes);
+        super(nodes, "Nearest Neighbour");
     }
 
     @Override
