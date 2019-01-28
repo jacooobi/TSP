@@ -63,6 +63,10 @@ public class LSSolver {
                 }
             }
         }
+
+        for (int i = 0; i < nodes.size(); i++) {
+            graph.add((int)nodes.get(i).get("id"));
+        }
     }
 
     private int[] getNeighbours(ArrayList<HashMap> nodes, int element) {
