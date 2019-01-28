@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -59,7 +60,7 @@ public class BaseHeuristic {
     private int getBestNode(ArrayList<Integer> graph, int currentNodeId) {
         ArrayList<HashMap<String, Integer>> candidates = evaluateCandidates(graph);
 
-        candidates.sort((o1, o2) -> o1.get("distance").compareTo(o2.get("distance")));
+        candidates.sort(Comparator.comparing(o -> o.get("distance")));
 
         return candidates.get(0).get("id");
     }
