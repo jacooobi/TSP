@@ -22,6 +22,11 @@ public class TSPMath {
         return totalSum;
     }
 
+    public static int getCost(Nodes nodes) {
+        return getCost(nodes, Graph.fromNodes(nodes));
+    }
+
+
     public static int distance(int x1, int y1, int x2, int y2) {
         return (int)Math.round(Math.sqrt((Math.pow(x2 - x1, 2.0) + Math.pow(y2 - y1, 2.0))));
     }

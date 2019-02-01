@@ -67,8 +67,15 @@ public class EASolver implements ISolver {
     }
 
     private ArrayList<Nodes> selection(ArrayList<Nodes> population) {
-        population.sort(Comparator.comparing(o -> -TSPMath.getCost(o, Graph.fromNodes(o))));
-        
+        population.sort(Comparator.comparing(o -> -TSPMath.getCost(o)));
+
+        Nodes worstElement = population.get(population.size() - 1);
+        int worstElementCost = TSPMath.getCost(worstElement);
+
+        for (int i = 0; i < population.size(); i += 5) {
+            // TODO: TUTAJ!
+        }
+
         return population;
     }
 
@@ -82,10 +89,6 @@ public class EASolver implements ISolver {
 
     private Nodes mutateOne(Nodes nodes) {
         return null;
-    }
-
-    private long getPopCost() {
-
     }
 
     @Override
