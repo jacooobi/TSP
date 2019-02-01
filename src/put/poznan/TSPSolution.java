@@ -27,6 +27,14 @@ public class TSPSolution {
         printResults(secondaryGraph, "Secondary Graph:");
     }
 
+    public Graph getPrimaryGraph() {
+        return primaryGraph;
+    }
+
+    public Graph getSecondaryGraph() {
+        return secondaryGraph;
+    }
+
     public Nodes getNodes() {
         return nodes;
     }
