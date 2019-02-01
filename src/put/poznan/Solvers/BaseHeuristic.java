@@ -4,24 +4,24 @@ import put.poznan.Structures.Graph;
 import put.poznan.Structures.Nodes;
 import put.poznan.TSPSolution;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
 public class BaseHeuristic implements ISolver {
-    protected String name;
     protected Nodes nodes;
     protected Graph usedNodes;
-
 
     protected Graph primaryGraph;
     protected Graph secondaryGraph;
 
-    public BaseHeuristic(Nodes nodes, String name) {
-        this.name = name;
+    public BaseHeuristic(Nodes nodes) {
         this.nodes = nodes;
-        this.usedNodes = new Graph();
-        this.primaryGraph = new Graph();
-        this.secondaryGraph = new Graph();
+    }
+
+    @Override
+    public String getName() {
+        return "BaseHeuristic";
     }
 
     protected void addNode(Graph graph, int node) {
@@ -40,13 +40,20 @@ public class BaseHeuristic implements ISolver {
     }
 
     public TSPSolution solve() {
-        constructSolution(primaryGraph);
-        constructSolution(secondaryGraph);
+        Nodes nodesCopy = nodes.copy();
+        Collections.shuffle(nodesCopy);
 
-        return new TSPSolution(nodes, primaryGraph, secondaryGraph, name);
+        usedNodes = new Graph();
+        primaryGraph = new Graph();
+        secondaryGraph = new Graph();
+
+        constructSolution(nodesCopy, primaryGraph);
+        constructSolution(nodesCopy, secondaryGraph);
+
+        return new TSPSolution(nodes, primaryGraph, secondaryGraph, getName());
     }
 
-    private void constructSolution(Graph graph) {
+    private void constructSolution(Nodes nodes, Graph graph) {
         addNode(graph, getStartNode());
 
         while (graph.size() < nodes.size() / 2) {
@@ -57,9 +64,7 @@ public class BaseHeuristic implements ISolver {
 
     private int getBestNode(Graph graph) {
         Nodes candidates = evaluateCandidates(graph);
-
         candidates.sort(Comparator.comparing(o -> o.get("distance")));
-
         return candidates.get(0).get("id");
     }
 

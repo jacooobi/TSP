@@ -1,38 +1,71 @@
 package put.poznan;
 
-import put.poznan.Solvers.GCHeuristic;
-import put.poznan.Solvers.ILSSolver;
-import put.poznan.Solvers.LSSolver;
-import put.poznan.Solvers.NNHeuristic;
+import put.poznan.Solvers.*;
+import put.poznan.Structures.Graph;
 import put.poznan.Structures.Nodes;
 import put.poznan.TSPSolution;
 
-public class Benchmark {
-    private LSSolver lsSolver;
-    private ILSSolver ilsSolver;
-    private NNHeuristic nnSolver;
-    private GCHeuristic gcSolver;
+import java.util.ArrayList;
 
-    private TSPSolution bestLsSolution;
-    private TSPSolution bestIlsSolution;
-    private TSPSolution bestGcSolution;
-    private TSPSolution bestNnSolution;
+public class Benchmark {
+    private ArrayList<SolverPair> solvers;
+
+    private class SolverPair {
+        private ISolver solver;
+        private TSPSolution solution;
+        private ArrayList<TSPSolution> solutionHistory;
+
+        public SolverPair(ISolver solver) {
+            this.solver = solver;
+            this.solutionHistory = new ArrayList<>();
+        }
+
+        private boolean swapSolution(TSPSolution newSolution) {
+            solutionHistory.add(solution);
+
+            if (solution == null) {
+                solution = newSolution;
+                return true;
+            }
+
+            int currentCost = this.solution.calculateTotalCost();
+            int newCost = newSolution.calculateTotalCost();
+
+            if (newCost < currentCost) {
+                solution = newSolution;
+                return true;
+            }
+
+            return false;
+        }
+
+        public void update() {
+            TSPSolution newSolution = this.solver.solve();
+            swapSolution(newSolution);
+        }
+
+        public void print() {
+            solution.print();
+        }
+    }
 
     public Benchmark(Nodes tspInstance) {
-        this.lsSolver = new LSSolver(tspInstance);
-        this.ilsSolver = new ILSSolver(tspInstance);
-        this.nnSolver = new NNHeuristic(tspInstance);
-        this.gcSolver = new GCHeuristic(tspInstance);
+        this.solvers = new ArrayList<>();
+//        this.solvers.add(new SolverPair(new GCHeuristic(tspInstance)));
+//        this.solvers.add(new SolverPair(new NNHeuristic(tspInstance)));
+//        this.solvers.add(new SolverPair(new LSSolver(tspInstance)));
+//        this.solvers.add(new SolverPair(new ILSSolver(tspInstance)));
+        this.solvers.add(new SolverPair(new EASolver(tspInstance)));
     }
 
     public void test(int times) {
-        bestLsSolution = lsSolver.solve();
-        bestIlsSolution = ilsSolver.solve();
-        bestGcSolution = gcSolver.solve();
-        bestNnSolution = nnSolver.solve();
+        for (SolverPair pair : solvers) {
+            for (int i = 0; i < times; i++) {
+                pair.update();
+                System.out.println(pair.solver.getName() + ": " + i);
+            }
 
-        for (int i = 0; i < times - 1; i++) {
-            TSPSolution solution;
+            pair.print();
         }
     }
 }

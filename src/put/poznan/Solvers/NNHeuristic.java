@@ -6,8 +6,15 @@ import put.poznan.Structures.Nodes;
 import put.poznan.TSPMath;
 
 public class NNHeuristic extends BaseHeuristic {
+    private String name = "NNHeuristic";
+
     public NNHeuristic(Nodes nodes) {
-        super(nodes, "Nearest Neighbour");
+        super(nodes);
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override

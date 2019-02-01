@@ -8,6 +8,8 @@ import put.poznan.TSPSolution;
 import java.util.*;
 
 public class LSSolver implements ISolver {
+    private String name = "LSSolver";
+
     protected Nodes allNodes;
 
     protected Graph primaryGraph;
@@ -17,6 +19,11 @@ public class LSSolver implements ISolver {
         this.allNodes = nodes;
         this.primaryGraph = new Graph();
         this.secondaryGraph = new Graph();
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     public TSPSolution solve() {
@@ -37,7 +44,6 @@ public class LSSolver implements ISolver {
 
         Nodes finalNodes = primaryNodes.copy();
         finalNodes.addAll(secondaryNodes.copy());
-        finalNodes.sort(Comparator.comparing(o -> (int)o.get("id")));
 
         return new TSPSolution(finalNodes, primaryGraph, secondaryGraph, "put.poznan.Solvers.LSSolver");
     }
@@ -51,7 +57,7 @@ public class LSSolver implements ISolver {
             for (int i = 0; i < nodes.size() - 1; i++) {
                 int beforeI = i == 0 ? nodes.size() - 1 : i - 1;
 
-                for (int j = i + 2; j < nodes.size() - 1; j++) {
+                for (int j = i + 1; j < nodes.size() - 1; j++) {
                     int afterJ = j + 1;
 
                     int currentCost = TSPMath.distance(nodes.get(beforeI), nodes.get(i)) +

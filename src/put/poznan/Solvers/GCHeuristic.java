@@ -6,9 +6,15 @@ import put.poznan.Structures.Nodes;
 import put.poznan.TSPMath;
 
 public class GCHeuristic extends BaseHeuristic {
+    private String name = "GCHeuristic";
 
     public GCHeuristic(Nodes nodes) {
-        super(nodes, "Greedy Cycle");
+        super(nodes);
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override

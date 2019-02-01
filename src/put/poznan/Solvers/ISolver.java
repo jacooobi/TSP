@@ -4,5 +4,5 @@ import put.poznan.TSPSolution;
 
 public interface ISolver {
     TSPSolution solve();
-//    ArrayList<Integer> getSolution();
+    String getName();
 }

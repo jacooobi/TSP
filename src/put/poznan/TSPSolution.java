@@ -3,6 +3,8 @@ package put.poznan;
 import put.poznan.Structures.Graph;
 import put.poznan.Structures.Nodes;
 
+import java.util.Comparator;
+
 public class TSPSolution {
     private Nodes nodes;
     private Graph primaryGraph;
@@ -15,6 +17,7 @@ public class TSPSolution {
         this.nodes = nodes;
         this.primaryGraph = primaryGraph;
         this.secondaryGraph = secondaryGraph;
+        this.nodes.sort(Comparator.comparing(o -> (int)o.get("id")));
     }
 
     public void print() {
@@ -22,7 +25,6 @@ public class TSPSolution {
 
         printResults(primaryGraph, "Primary Graph:");
         printResults(secondaryGraph, "Secondary Graph:");
-//        printResults(getFinalGraph(), "Final Graph:");
     }
 
     public Nodes getNodes() {
@@ -51,5 +53,9 @@ public class TSPSolution {
 
     public int calculateTotalCost(Graph graph) {
         return TSPMath.getCost(nodes, graph);
+    }
+
+    public int calculateTotalCost() {
+        return TSPMath.getCost(nodes, primaryGraph) + TSPMath.getCost(nodes, secondaryGraph);
     }
 }

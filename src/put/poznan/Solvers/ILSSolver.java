@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class ILSSolver implements ISolver {
+    public String name = "ILSSolver";
+
     protected Nodes allNodes;
 
     private LSSolver lsSolver;
@@ -14,6 +16,11 @@ public class ILSSolver implements ISolver {
     public ILSSolver(Nodes nodes) {
         this.allNodes = nodes;
         this.lsSolver = new LSSolver(nodes);
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     public TSPSolution solve() {
