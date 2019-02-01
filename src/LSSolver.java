@@ -2,8 +2,8 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public class LSSolver {
-    protected ArrayList<HashMap> allNodes;
     protected ArrayList<Integer> usedNodes;
+    protected ArrayList<HashMap> allNodes;
 
     protected ArrayList<Integer> primaryGraph;
     protected ArrayList<Integer> secondaryGraph;
@@ -15,64 +15,58 @@ public class LSSolver {
         this.secondaryGraph = new ArrayList<>();
     }
 
-
     public TSPSolution solve() {
-        ArrayList<HashMap> nodesCopy = getNodesClone();
+        ArrayList<HashMap> nodesCopy = getNodesClone(allNodes);
         Collections.shuffle(nodesCopy);
-        int size = nodesCopy.size();
+        return solve(nodesCopy);
+    }
 
-        ArrayList<HashMap> primaryNodes = new ArrayList<>(nodesCopy.subList(0, size / 2));
-        ArrayList<HashMap> secondaryNodes = new ArrayList<>(nodesCopy.subList(size / 2, size));
+
+    public TSPSolution solve(ArrayList<HashMap> nodes) {
+        int size = nodes.size();
+
+        ArrayList<HashMap> primaryNodes = new ArrayList<>(nodes.subList(0, size / 2));
+        ArrayList<HashMap> secondaryNodes = new ArrayList<>(nodes.subList(size / 2, size));
 
         constructSolution(primaryGraph, primaryNodes);
         constructSolution(secondaryGraph, secondaryNodes);
 
-        return new TSPSolution(allNodes, primaryGraph, secondaryGraph, "LSSolver");
-    }
+        ArrayList<HashMap> finalNodes = getNodesClone(primaryNodes);
+        finalNodes.addAll(getNodesClone(secondaryNodes));
+        finalNodes.sort(Comparator.comparing(o -> (int)o.get("id")));
 
-    private int pathTotalSum(ArrayList<HashMap> nodes) {
-        int totalSum = 0;
-
-        for (int i=0; i< nodes.size()-1; i++) {
-            HashMap<String, Integer> curNode = nodes.get(i);
-            HashMap<String, Integer> nextNode = nodes.get(i+1);
-            totalSum += euclideanDistance(curNode.get("x"), curNode.get("y"), nextNode.get("x"), nextNode.get("y"));
-        }
-
-        return totalSum;
+        return new TSPSolution(finalNodes, primaryGraph, secondaryGraph, "LSSolver");
     }
 
     private void constructSolution(ArrayList<Integer> graph, ArrayList<HashMap> nodes) {
-        boolean switched = true;
+        boolean improved = true;
 
-        while (switched) {
-//            System.out.println(pathTotalSum(nodes));
-            switched = false;
+        while (improved) {
+            improved = false;
 
-            for (int i = 0; i < nodes.size() - 2; i++) {
+            for (int i = 0; i < nodes.size() - 1; i++) {
+                int beforeI = i == 0 ? nodes.size() - 1 : i - 1;
+
                 for (int j = i + 2; j < nodes.size() - 1; j++) {
-                    int currentCost = euclideanDistance(nodes.get(i), nodes.get(i + 1))
-                            + euclideanDistance(nodes.get(j), nodes.get(j + 1));
-                    int nextCost = euclideanDistance(nodes.get(i), nodes.get(j))
-                            + euclideanDistance(nodes.get(i+1), nodes.get(j+ 1));
+                    int afterJ = j + 1;
+
+                    int currentCost = euclideanDistance(nodes.get(beforeI), nodes.get(i)) +
+                            euclideanDistance(nodes.get(afterJ), nodes.get(j));
+                    int nextCost = euclideanDistance(nodes.get(beforeI), nodes.get(j)) +
+                            euclideanDistance(nodes.get(i), nodes.get(afterJ));
 
                     if (nextCost < currentCost) {
-                        Collections.swap(nodes, i + 1, j);
-                        switched = true;
+                        Collections.swap(nodes, i, j);
+                        improved = true;
                     }
                 }
             }
         }
 
+        graph.clear();
         for (int i = 0; i < nodes.size(); i++) {
             graph.add((int)nodes.get(i).get("id"));
         }
-    }
-
-    private int[] getNeighbours(ArrayList<HashMap> nodes, int element) {
-        int before = element == 0 ? nodes.size() - 1 : element - 1;
-        int after = element == nodes.size() - 1 ? 0 : element + 1;
-        return new int[] { before, after };
     }
 
     protected int euclideanDistance(HashMap nodeA, HashMap nodeB) {
@@ -87,13 +81,32 @@ public class LSSolver {
         return (int)Math.round(Math.sqrt((Math.pow(x2 - x1, 2.0) + Math.pow(y2 - y1, 2.0))));
     }
 
-    private ArrayList<HashMap> getNodesClone() {
+    public ArrayList<HashMap> getNodesClone(ArrayList<HashMap> nodes) {
         ArrayList<HashMap> clone = new ArrayList<>();
 
-        for (HashMap node : allNodes) {
+        for (HashMap node : nodes) {
             clone.add((HashMap) node.clone());
         }
 
         return clone;
+    }
+
+    public int calculateTotalCost(ArrayList<HashMap> graph) {
+        int totalCost = 0;
+
+        HashMap<String, Integer> firstNode = graph.get(0);
+        HashMap<String, Integer> lastNode = graph.get(graph.size() - 1);
+        totalCost += euclideanDistance(firstNode.get("x"), firstNode.get("y"), lastNode.get("x"), lastNode.get("y"));
+
+        for (int i=0; i<graph.size()-1; i++) {
+            HashMap<String, Integer> curNode = graph.get(i);
+            HashMap<String, Integer> nextNode = graph.get(i + 1);
+
+            totalCost += euclideanDistance(curNode.get("x"), curNode.get("y"), nextNode.get("x"), nextNode.get("y"));
+        }
+
+
+
+        return totalCost;
     }
 }

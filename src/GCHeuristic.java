@@ -37,6 +37,9 @@ public class GCHeuristic extends BaseHeuristic {
         if (graph.size() <= 1) return 0;
 
         int totalSum = 0;
+        HashMap<String, Integer> firstNode = nodes.get(graph.get(0));
+        HashMap<String, Integer> lastNode = nodes.get(graph.get(graph.size() - 1));
+        totalSum += euclideanDistance(firstNode.get("x"), firstNode.get("y"), lastNode.get("x"), lastNode.get("y"));
 
         for (int i=0; i<graph.size()-1; i++) {
             HashMap<String, Integer> curNode = nodes.get(graph.get(i));

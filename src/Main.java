@@ -12,10 +12,12 @@ public class Main {
         NNHeuristic nnSolver = new NNHeuristic(tspInstance);
         GCHeuristic gcSolver = new GCHeuristic(tspInstance);
         LSSolver lsSolver = new LSSolver(tspInstance);
+        ILSSolver ilsSolver = new ILSSolver(tspInstance);
 
 //        solutions.add(nnSolver.solve());
 //        solutions.add(gcSolver.solve());
         solutions.add(lsSolver.solve());
+//        solutions.add(ilsSolver.solve());
 
         for (TSPSolution solution : solutions) {
             solution.print();

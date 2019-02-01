@@ -50,7 +50,7 @@ public class BaseHeuristic {
         int currentNode = getStartNode();
         addNode(graph, currentNode);
 
-        while (graph.size() < 50) {
+        while (graph.size() < nodes.size() / 2) {
             int newNode = getBestNode(graph, currentNode);
             addNode(graph, newNode);
             currentNode = newNode;
