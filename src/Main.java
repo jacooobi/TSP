@@ -1,5 +1,12 @@
+import put.poznan.DataReader;
+import put.poznan.Solvers.GCHeuristic;
+import put.poznan.Solvers.ILSSolver;
+import put.poznan.Solvers.LSSolver;
+import put.poznan.Solvers.NNHeuristic;
+import put.poznan.Structures.Nodes;
+import put.poznan.TSPSolution;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Main {
 
@@ -7,7 +14,7 @@ public class Main {
         ArrayList<TSPSolution> solutions = new ArrayList();
 
         DataReader dr = new DataReader("kroA100");
-        ArrayList<HashMap> tspInstance = dr.load();
+        Nodes tspInstance = dr.load();
 
         NNHeuristic nnSolver = new NNHeuristic(tspInstance);
         GCHeuristic gcSolver = new GCHeuristic(tspInstance);
