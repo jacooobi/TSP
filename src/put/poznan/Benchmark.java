@@ -1,15 +1,13 @@
 package put.poznan;
 
-import javafx.util.Pair;
+import put.poznan.Structures.InstancePair;
 import put.poznan.Solvers.*;
 import put.poznan.Structures.Graph;
 import put.poznan.Structures.Nodes;
-import put.poznan.TSPSolution;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -94,12 +92,12 @@ public class Benchmark {
         }
     }
 
-    public Benchmark(ArrayList<Pair<String, Nodes>> tspInstances) {
+    public Benchmark(ArrayList<InstancePair> tspInstances) {
         this.solvers = new ArrayList<>();
 
-        for (Pair<String, Nodes> instancePair : tspInstances) {
-            String instanceName = instancePair.getKey();
-            Nodes tspInstance = instancePair.getValue();
+        for (InstancePair instancePair : tspInstances) {
+            String instanceName = instancePair.getName();
+            Nodes tspInstance = instancePair.getNodes();
 
             this.solvers.add(new SolverPair(new GCHeuristic(tspInstance, "gc"), instanceName));
             this.solvers.add(new SolverPair(new NNHeuristic(tspInstance, "nn"), instanceName));
