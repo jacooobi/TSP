@@ -19,13 +19,17 @@ public class Benchmark {
         private Graph primaryGraph;
         private Graph secondaryGraph;
         private long time;
-        private int cost;
+        private int totalCost;
+        private int primaryGraphCost;
+        private int secondaryGraphCost;
 
         public DataRow(TSPSolution solution, long timeElapsed) {
             primaryGraph = solution.getPrimaryGraph();
             secondaryGraph = solution.getSecondaryGraph();
-            cost = solution.calculateTotalCost();
             time = timeElapsed;
+            totalCost = solution.calculateTotalCost();
+            primaryGraphCost = solution.calculateTotalCost(primaryGraph);
+            secondaryGraphCost = solution.calculateTotalCost(secondaryGraph);
         }
 
         public String toString(String delimiter) {
@@ -39,7 +43,9 @@ public class Benchmark {
             return primaryGraphString + delimiter
                     + secondaryGraphString + delimiter
                     + time + delimiter
-                    + cost;
+                    + primaryGraphCost + delimiter
+                    + secondaryGraphCost + delimiter
+                    + totalCost;
         }
     }
 
@@ -87,11 +93,11 @@ public class Benchmark {
 
     public Benchmark(Nodes tspInstance) {
         this.solvers = new ArrayList<>();
-//        this.solvers.add(new SolverPair(new GCHeuristic(tspInstance, "gc")));
-//        this.solvers.add(new SolverPair(new NNHeuristic(tspInstance, "nn")));
+        this.solvers.add(new SolverPair(new GCHeuristic(tspInstance, "gc")));
+        this.solvers.add(new SolverPair(new NNHeuristic(tspInstance, "nn")));
         this.solvers.add(new SolverPair(new LSSolver(tspInstance, "ls-random")));
         this.solvers.add(new SolverPair(new LSSolver(tspInstance, "ls-nn", InitializationType.NN)));
-//        this.solvers.add(new SolverPair(new ILSSolver(tspInstance, "ils")));
+        this.solvers.add(new SolverPair(new ILSSolver(tspInstance, "ils")));
 //        this.solvers.add(new SolverPair(new EASolver(tspInstance)));
     }
 
@@ -110,7 +116,7 @@ public class Benchmark {
         PrintWriter pw = new PrintWriter(new File(filename));
         StringBuilder sb = new StringBuilder();
 
-        sb.append("name,primary_graph,secondary_graph,time_ns,cost\n");
+        sb.append("name,primary_graph,secondary_graph,time_ns,primary_cost,secondary_cost,total_cost\n");
 
         for (SolverPair pair : solvers) {
             String solverName = pair.solver.getName();
