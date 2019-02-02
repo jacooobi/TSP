@@ -17,7 +17,7 @@ public class EASolver implements ISolver {
     private LSSolver localSolver;
 
     private double POPULATION_PERCENTAGE = 0.25;
-    private int CROSS_OVER_SIZE = 15;
+    private double CROSS_OVER_RATIO = 0.5;
 
 
     public EASolver(Nodes tspInstance, int popSize) {
@@ -132,7 +132,7 @@ public class EASolver implements ISolver {
         population.sort(Comparator.comparing(o -> TSPMath.getCost(o)));
         ArrayList<Nodes> offspringPopulation = new ArrayList<>();
 
-        for (int el=0; el<CROSS_OVER_SIZE; el++) {
+        for (int el=0; el< CROSS_OVER_RATIO*popSize; el++) {
             offspringPopulation.add(produceOffspring(population.subList(0, popSize/2)));
         }
 
