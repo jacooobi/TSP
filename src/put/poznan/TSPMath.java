@@ -34,4 +34,21 @@ public class TSPMath {
     public static int distance(Node node1, Node node2) {
         return distance(node1.get("x"), node1.get("y"), node2.get("x"), node2.get("y"));
     }
+
+    public static double getSimilarity(TSPSolution solution1, TSPSolution solution2) {
+        return TSPMath.getSimilarity(solution1.getFinalGraph(), solution2.getFinalGraph());
+    }
+
+    public static double getSimilarity(Graph g1, Graph g2) {
+        int matchesCount = 0;
+
+        for (int i=0; i<g1.size(); i++) {
+            int g2Index = g2.indexOf(g1.get(i));
+
+            if (g1.getNext(i) == g2.getNext(g2Index))
+                matchesCount++;
+        }
+
+        return matchesCount/(double)g1.size();
+    }
 }

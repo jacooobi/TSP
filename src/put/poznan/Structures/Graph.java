@@ -12,4 +12,11 @@ public class Graph extends ArrayList<Integer> {
 
         return newGraph;
     }
+
+    public int getNext(int i) {
+        if (i + 1 == this.size())
+            return this.get(0);
+        else
+            return this.get(i + 1);
+    }
 }

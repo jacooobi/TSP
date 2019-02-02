@@ -1,5 +1,6 @@
 import put.poznan.Benchmark;
 import put.poznan.DataReader;
+import put.poznan.QualityCorrelationBenchmark;
 import put.poznan.Structures.InstancePair;
 import put.poznan.Structures.Nodes;
 
@@ -21,5 +22,10 @@ public class Main {
         Benchmark bench = new Benchmark(tspInstances);
         bench.test(100);
         bench.writeToFile("results.csv");
+
+        QualityCorrelationBenchmark correlationBenchmark = new QualityCorrelationBenchmark(tspInstance100);
+        correlationBenchmark.test();
+        correlationBenchmark.writeToFile("correlation_results.csv");
+
     }
 }

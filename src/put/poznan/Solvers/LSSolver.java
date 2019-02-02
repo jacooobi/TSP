@@ -40,7 +40,7 @@ public class LSSolver implements ISolver {
         Nodes nodesCopy = allNodes.copy();
 
         if (initializationType == InitializationType.RANDOM) {
-            Collections.shuffle(nodesCopy);
+            Collections.shuffle(nodesCopy, new Random());
         } else if (initializationType == InitializationType.NN) {
             nnHeuristic = new NNHeuristic(nodesCopy, "any");
 
