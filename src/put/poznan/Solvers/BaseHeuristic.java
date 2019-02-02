@@ -9,19 +9,21 @@ import java.util.Comparator;
 import java.util.Random;
 
 public class BaseHeuristic implements ISolver {
+    protected String name;
     protected Nodes nodes;
     protected Graph usedNodes;
 
     protected Graph primaryGraph;
     protected Graph secondaryGraph;
 
-    public BaseHeuristic(Nodes nodes) {
+    public BaseHeuristic(Nodes nodes, String name) {
         this.nodes = nodes;
+        this.name = name;
     }
 
     @Override
     public String getName() {
-        return "BaseHeuristic";
+        return name;
     }
 
     protected void addNode(Graph graph, int node) {
@@ -39,24 +41,28 @@ public class BaseHeuristic implements ISolver {
         }
     }
 
+    public void init() {
+        usedNodes = new Graph();
+        primaryGraph = new Graph();
+        secondaryGraph = new Graph();
+    }
+
     public TSPSolution solve() {
         Nodes nodesCopy = nodes.copy();
         Collections.shuffle(nodesCopy);
 
-        usedNodes = new Graph();
-        primaryGraph = new Graph();
-        secondaryGraph = new Graph();
+        init();
 
-        constructSolution(nodesCopy, primaryGraph);
-        constructSolution(nodesCopy, secondaryGraph);
+        constructSolution(primaryGraph, nodes.size() / 2);
+        constructSolution(secondaryGraph, nodes.size() / 2);
 
         return new TSPSolution(nodes, primaryGraph, secondaryGraph, getName());
     }
 
-    private void constructSolution(Nodes nodes, Graph graph) {
+    public void constructSolution(Graph graph, int maxSize) {
         addNode(graph, getStartNode());
 
-        while (graph.size() < nodes.size() / 2) {
+        while (graph.size() < maxSize) {
             int newNode = getBestNode(graph);
             addNode(graph, newNode);
         }

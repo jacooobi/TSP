@@ -27,4 +27,16 @@ public class Nodes extends ArrayList<Node> {
 
         return newNodes;
     }
+
+    public Nodes sortByGraph(Graph graph) {
+        Nodes nodesCopy = copy();
+
+        for (int i = 0; i < size(); i++) {
+            Node element = get(i);
+            int idx = graph.indexOf(element.get("id"));
+            nodesCopy.set(idx, element);
+        }
+
+        return nodesCopy;
+    }
 }

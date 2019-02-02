@@ -8,17 +8,27 @@ import put.poznan.TSPSolution;
 import java.util.*;
 
 public class LSSolver implements ISolver {
-    private String name = "LSSolver";
+    private String name;
+    private Nodes allNodes;
+    private Graph primaryGraph;
+    private Graph secondaryGraph;
+    private InitializationType initializationType;
+    private NNHeuristic nnHeuristic;
 
-    protected Nodes allNodes;
-
-    protected Graph primaryGraph;
-    protected Graph secondaryGraph;
-
-    public LSSolver(Nodes nodes) {
+    public LSSolver(Nodes nodes, String name) {
         this.allNodes = nodes;
         this.primaryGraph = new Graph();
         this.secondaryGraph = new Graph();
+        this.initializationType = InitializationType.RANDOM;
+        this.name = name;
+    }
+
+    public LSSolver(Nodes nodes, String name, InitializationType type) {
+        this.allNodes = nodes;
+        this.primaryGraph = new Graph();
+        this.secondaryGraph = new Graph();
+        this.initializationType = type;
+        this.name = name;
     }
 
     @Override
@@ -28,10 +38,21 @@ public class LSSolver implements ISolver {
 
     public TSPSolution solve() {
         Nodes nodesCopy = allNodes.copy();
-        Collections.shuffle(nodesCopy);
+
+        if (initializationType == InitializationType.RANDOM) {
+            Collections.shuffle(nodesCopy);
+        } else if (initializationType == InitializationType.NN) {
+            nnHeuristic = new NNHeuristic(nodesCopy, "any");
+
+            Graph tempGraph = new Graph();
+            nnHeuristic.init();
+            nnHeuristic.constructSolution(tempGraph, nodesCopy.size());
+
+            nodesCopy.sortByGraph(tempGraph);
+        }
+
         return solve(nodesCopy);
     }
-
 
     public TSPSolution solve(Nodes nodes) {
         int size = nodes.size();
@@ -54,26 +75,29 @@ public class LSSolver implements ISolver {
         while (improved) {
             improved = false;
 
-            for (int i = 0; i < nodes.size() - 1; i++) {
-                int beforeI = i == 0 ? nodes.size() - 1 : i - 1;
-
-                for (int j = i + 1; j < nodes.size() - 1; j++) {
-                    int afterJ = j + 1;
-
-                    int currentCost = TSPMath.distance(nodes.get(beforeI), nodes.get(i)) +
-                            TSPMath.distance(nodes.get(afterJ), nodes.get(j));
-                    int nextCost = TSPMath.distance(nodes.get(beforeI), nodes.get(j)) +
-                            TSPMath.distance(nodes.get(i), nodes.get(afterJ));
+            for (int i = 0; i < nodes.size(); i++) {
+                for (int j = i + 1; j < nodes.size(); j++) {
+                    int currentCost = getCostOf(nodes, i) + getCostOf(nodes, j);
+                    Nodes nextNodes = nodes.copy();
+                    Collections.swap(nextNodes, i, j);
+                    int nextCost = getCostOf(nextNodes, i) + getCostOf(nextNodes, j);
 
                     if (nextCost < currentCost) {
-                        Collections.swap(nodes, i, j);
+                        nodes = nextNodes;
                         improved = true;
                     }
                 }
             }
         }
 
-        Graph graph = Graph.fromNodes(nodes);
-        return graph;
+        return Graph.fromNodes(nodes);
+    }
+
+    private int getCostOf(Nodes nodes, int idx) {
+        int beforeIdx = idx == 0 ? nodes.size() - 1 : idx - 1;
+        int afterIdx = (idx + 1) % nodes.size();
+
+        return TSPMath.distance(nodes.get(beforeIdx), nodes.get(idx)) +
+                TSPMath.distance(nodes.get(afterIdx), nodes.get(idx));
     }
 }

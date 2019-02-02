@@ -7,15 +7,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class ILSSolver implements ISolver {
-    public String name = "ILSSolver";
-
-    protected Nodes allNodes;
-
+    private String name;
+    private Nodes allNodes;
     private LSSolver lsSolver;
 
-    public ILSSolver(Nodes nodes) {
+    public ILSSolver(Nodes nodes, String name) {
         this.allNodes = nodes;
-        this.lsSolver = new LSSolver(nodes);
+        this.lsSolver = new LSSolver(nodes, name);
+        this.name = name;
     }
 
     @Override

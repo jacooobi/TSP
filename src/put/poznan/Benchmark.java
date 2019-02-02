@@ -46,18 +46,14 @@ public class Benchmark {
     private class SolverPair {
         private ISolver solver;
         private TSPSolution solution;
-        private ArrayList<TSPSolution> solutionHistory;
         private ArrayList<DataRow> results;
 
         public SolverPair(ISolver solver) {
             this.solver = solver;
-            this.solutionHistory = new ArrayList<>();
             this.results = new ArrayList<>();
         }
 
         private boolean swapSolution(TSPSolution newSolution) {
-//            solutionHistory.add(solution);
-
             if (solution == null) {
                 solution = newSolution;
                 return true;
@@ -91,10 +87,11 @@ public class Benchmark {
 
     public Benchmark(Nodes tspInstance) {
         this.solvers = new ArrayList<>();
-        this.solvers.add(new SolverPair(new GCHeuristic(tspInstance)));
-        this.solvers.add(new SolverPair(new NNHeuristic(tspInstance)));
-        this.solvers.add(new SolverPair(new LSSolver(tspInstance)));
-//        this.solvers.add(new SolverPair(new ILSSolver(tspInstance)));
+//        this.solvers.add(new SolverPair(new GCHeuristic(tspInstance, "gc")));
+//        this.solvers.add(new SolverPair(new NNHeuristic(tspInstance, "nn")));
+        this.solvers.add(new SolverPair(new LSSolver(tspInstance, "ls-random")));
+        this.solvers.add(new SolverPair(new LSSolver(tspInstance, "ls-nn", InitializationType.NN)));
+//        this.solvers.add(new SolverPair(new ILSSolver(tspInstance, "ils")));
 //        this.solvers.add(new SolverPair(new EASolver(tspInstance)));
     }
 
