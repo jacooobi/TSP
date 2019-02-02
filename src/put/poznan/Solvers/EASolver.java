@@ -36,7 +36,7 @@ public class EASolver implements ISolver {
     public TSPSolution solve() {
         ArrayList<Nodes> population = initPopulation(allNodes);
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 500; i++) {
             ArrayList<Nodes> crossedOver = crossover(population);
             ArrayList<Nodes> mutatedNodes = mutation(crossedOver);
             population = selection(population, mutatedNodes);
@@ -63,9 +63,22 @@ public class EASolver implements ISolver {
     private ArrayList<Nodes> initPopulation(Nodes nodes) {
         population = new ArrayList<>();
 
+        NNHeuristic hhsolver = new NNHeuristic(this.allNodes, "");
+
         for (int i = 0; i < popSize; i++) {
-            Nodes newNodes = nodes.copy();
-            Collections.shuffle(newNodes);
+            Nodes newNodes = new Nodes();
+            TSPSolution solution = hhsolver.solve();
+            Graph firstGraph = solution.getPrimaryGraph();
+            Graph secondGraph = solution.getSecondaryGraph();
+
+            for(int j=0; j<firstGraph.size(); j++) {
+                newNodes.add(nodes.get(firstGraph.get(j)));
+            }
+
+            for(int j=0; j<secondGraph.size(); j++) {
+                newNodes.add(nodes.get(secondGraph.get(j)));
+            }
+
             population.add(newNodes);
         }
 

@@ -104,6 +104,7 @@ public class Benchmark {
             this.solvers.add(new SolverPair(new LSSolver(tspInstance, "ls-random"), instanceName));
             this.solvers.add(new SolverPair(new LSSolver(tspInstance, "ls-nn", InitializationType.NN), instanceName));
             this.solvers.add(new SolverPair(new ILSSolver(tspInstance, "ils"), instanceName));
+            this.solvers.add(new SolverPair(new EASolver(tspInstance), instanceName));
         }
     }
 
